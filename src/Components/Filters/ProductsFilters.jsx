@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 import CreateProductModal from '../Product/CreateProductModal'
 
-function ProductsFilters({products, setFilteredProducts}) {
+function ProductsFilters({triggerRefresh, products, setFilteredProducts}) {
   const [searchField, setSearchField] = useState("")
 
   const filterProducts = () => {
@@ -26,7 +26,7 @@ function ProductsFilters({products, setFilteredProducts}) {
     <div className="mr-4">
       <div className="p-4 rounded-xl bg-[rgba(226,232,240,255)] flex flex-col gap-2">
         <button onClick={() => setModalOpen(true)} className="bg-[#74C0FC] p-2 rounded-lg">Add product&nbsp;&nbsp;<FontAwesomeIcon icon={faSquarePlus} /></button>
-        <CreateProductModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+        <CreateProductModal isOpen={modalOpen} onClose={() => {setModalOpen(false); triggerRefresh()}} />
         <div className="flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow-sm w-full max-w-md">
           <input
             type="text"

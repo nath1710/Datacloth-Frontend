@@ -13,7 +13,7 @@ function CreateProductModal({ isOpen, onClose }) {
 
   useEffect(() => {
     if (isOpen) {
-      fetch('/categories')
+      fetch(import.meta.env.VITE_BACKEND_URL + '/categories')
         .then(res => res.json())
         .then(data => setCategories(data))
         .catch(err => console.error('Error while fetching categories:', err));
@@ -33,13 +33,14 @@ function CreateProductModal({ isOpen, onClose }) {
 
     const dataToSend = {
       ...formData,
+      image: [formData.image],
       category_id: parseInt(formData.category_id),
       price: parseFloat(formData.price),
       stock: parseInt(formData.stock),
     };
 
     try {
-      const res = await fetch(process.env.BACKEND_URL + '/products', {
+      const res = await fetch(import.meta.env.VITE_BACKEND_URL + '/products', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
