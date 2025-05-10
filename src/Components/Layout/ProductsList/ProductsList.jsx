@@ -114,6 +114,11 @@ import ProductsFilters from '../../Filters/ProductsFilters';
 // ];
 
 function ProductsList() {
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
 
   const fetchProducts = async () => {
     try {
@@ -122,15 +127,12 @@ function ProductsList() {
       if (!response.ok) throw new Error("Error while fetching products");
 
       const data = await response.json();
-      console.log(data);
       setProducts(data);
-      setFilteredProducts(data)
+      setFilteredProducts(data);
     } catch (error) {
       console.error(error.message);
     }
-  }
-
-  const[refreshTrigger, setRefreshTrigger] = useState(0)
+  };
 
   const triggerRefresh = () => {
     setRefreshTrigger(prev => prev + 1);
@@ -140,84 +142,69 @@ function ProductsList() {
     fetchProducts();
   }, [refreshTrigger]);
 
-  const [products, setProducts] = useState([])
-
-  const [filteredProducts, setFilteredProducts] = useState([]);
-
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const itemsPerPage = 10;
-
-  // const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
-  // const handleNextPage = () => {
-  //   if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  // };
-
-  // const handlePreviousPage = () => {
-  //   if (currentPage > 1) setCurrentPage(currentPage - 1);
-  // };
-
-  // const handlePageClick = (pageNumber) => {
-  //   setCurrentPage(pageNumber);
-  // };
-
-  // const startIndex = (currentPage - 1) * itemsPerPage;
-  // const selectedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   return (
     <div className="pt-[115px] flex flex-col items-center">
       <div>
         <p className="text-3xl pb-3">Products List</p>
-        <div className="flex">
-          <ProductsFilters triggerRefresh={triggerRefresh} products={products} setFilteredProducts={setFilteredProducts}/>
+        <div className="flex flex-col lg:flex-row gap-3">
+          <ProductsFilters
+            triggerRefresh={triggerRefresh}
+            products={products}
+            setFilteredProducts={setFilteredProducts}
+          />
           <div className="bg-[rgba(226,232,240,255)] flex flex-col gap-1 p-4 rounded-xl">
-            {products && products.length >0 ? (
-              filteredProducts.map((product) => (
+            {currentProducts.length > 0 ? (
+              currentProducts.map((product) => (
                 <ProductsListCard
                   key={product.id}
                   product={product}
                   triggerRefresh={triggerRefresh}
                 />
               ))
-            ) : <p>No products were found</p>}
+            ) : (
+              <p>No products were found</p>
+            )}
 
-            {/* Paginación
-            {products.length > 0 && <div className="flex justify-center mt-4 space-x-2">
-              <button
-                onClick={handlePreviousPage}
-                disabled={currentPage === 1}
-                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-              >
-                Prev
-              </button>
-
-              {Array.from({ length: totalPages }, (_, i) => (
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-4">
                 <button
-                  key={i + 1}
-                  onClick={() => handlePageClick(i + 1)}
-                  className={`px-3 py-1 rounded ${
-                    currentPage === i + 1
-                      ? 'bg-indigo-500 text-white'
-                      : 'bg-gray-200 hover:bg-gray-300'
-                  }`}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
                 >
-                  {i + 1}
+                  Prev
                 </button>
-              ))}
-
-              <button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>} */}
+                {[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`px-3 py-1 rounded ${
+                      currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
+                    }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 bg-gray-300 rounded disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ProductsList
+export default ProductsList;

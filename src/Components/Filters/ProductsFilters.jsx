@@ -23,7 +23,7 @@ function ProductsFilters({triggerRefresh, products, setFilteredProducts}) {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <div className="mr-4">
+    <div className="">
       <div className="p-4 rounded-xl bg-[rgba(226,232,240,255)] flex flex-col gap-2">
         <button onClick={() => setModalOpen(true)} className="bg-[#74C0FC] p-2 rounded-lg">Add product&nbsp;&nbsp;<FontAwesomeIcon icon={faSquarePlus} /></button>
         <CreateProductModal isOpen={modalOpen} onClose={() => {setModalOpen(false); triggerRefresh()}} />
