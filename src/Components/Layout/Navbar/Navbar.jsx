@@ -33,10 +33,9 @@ function Navbar() {
                         </div>
                     </li>
                     <li>
-                        <button className="text-white px-4 py-2 rounded bg-cyan-300 " onClick={() => setIsOpen(prev => !prev)}>
+                        <button className="text-white px-4 py-2 rounded bg-[#74C0FC]" onClick={() => setIsOpen(prev => !prev)}>
                             <FontAwesomeIcon icon={isOpen ? faXmark : faBars} size="xl" />
                         </button>
-
                     </li>
                 </ul>
                 <ul className="flex items-center gap-3">

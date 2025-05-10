@@ -25,7 +25,7 @@ function ProductsListCard({product}) {
               Price <span className="font-bold text-black">${product.price}</span>
             </div>
             <div>
-              Stock <span className="font-bold text-black">${product.stock}</span>
+              Stock <span className="font-bold text-black">{product.stock}</span>
             </div>
           </div>
         </div>
